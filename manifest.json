@@ -1,0 +1,9 @@
+{
+  "Name": "Anel do Arqueologo",
+  "Author": "SeuNome",
+  "Version": "1.0.0",
+  "Description": "Adiciona o Anel do Arqueologo, que aumenta drasticamente os itens obtidos ao cavar com a pa.",
+  "UniqueID": "SeuNome.AnelDoArqueologo",
+  "EntryDll": "AnelDoArqueologo.dll",
+  "MinimumApiVersion": "4.0.0"
+}
