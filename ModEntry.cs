@@ -65,60 +65,36 @@ namespace AnelDoArqueologo
         }
     }
 
-    // --- PATCH: Multiplica os itens dropados ao usar a Pá ---
-    [HarmonyPatch(typeof(Game1), nameof(Game1.createObjectDebris))]
-    public static class DigDropPatch
+    // --- PATCH ÚNICO: Multiplica itens dropados (Apenas ID String, como exige a 1.6) ---
+    [HarmonyPatch]
+    public static class DigDropStringPatch
     {
-        // Usa a assinatura mais comum da 1.6 para criação de itens
-        [HarmonyPatch(new Type[] { typeof(string), typeof(int), typeof(int), typeof(int), typeof(int), typeof(float), typeof(GameLocation) })]
-        public static class StringIdPatch
+        static System.Reflection.MethodBase TargetMethod()
         {
-            static bool Prefix(string id, int xTile, int yTile, int groundLevel, int itemQuality, float velocityMultiplyer, GameLocation location)
-            {
-                // Se já estamos multiplicando, ou o jogador não está com o anel, ou não é uma pá, segue o fluxo normal
-                if (ModEntry.IsProcessing || !ModEntry.HasRingEquipped()) return true;
-                if (!(Game1.player.CurrentTool is StardewValley.Tools.Hoe)) return true;
-
-                ModEntry.IsProcessing = true;
-                try
-                {
-                    // O jogo ia dropar 1 item. Nós dropamos o original + 3 extras (total 4)
-                    for (int i = 0; i < 3; i++)
-                    {
-                        Game1.createObjectDebris(id, xTile + Game1.random.Next(-16, 17), yTile + Game1.random.Next(-16, 17), groundLevel, itemQuality, velocityMultiplyer, location);
-                    }
-                }
-                finally
-                {
-                    ModEntry.IsProcessing = false;
-                }
-                return true; // Deixa o jogo criar o item original também
-            }
+            return AccessTools.GetDeclaredMethods(typeof(Game1))
+                .FirstOrDefault(m => m.Name == "createObjectDebris" && m.GetParameters().Length == 7 && m.GetParameters()[0].ParameterType == typeof(string));
         }
 
-        // A 1.6 também possui uma versão que recebe ID numérico (int)
-        [HarmonyPatch(new Type[] { typeof(int), typeof(int), typeof(int), typeof(int), typeof(int), typeof(float), typeof(GameLocation) })]
-        public static class IntIdPatch
+        static bool Prefix(string id, int xTile, int yTile, int groundLevel, int itemQuality, float velocityMultiplyer, GameLocation location)
         {
-            static bool Prefix(int id, int xTile, int yTile, int groundLevel, int itemQuality, float velocityMultiplyer, GameLocation location)
-            {
-                if (ModEntry.IsProcessing || !ModEntry.HasRingEquipped()) return true;
-                if (!(Game1.player.CurrentTool is StardewValley.Tools.Hoe)) return true;
+            // Se já estamos multiplicando, ou o jogador não está com o anel, ou não é uma pá, segue o fluxo normal
+            if (ModEntry.IsProcessing || !ModEntry.HasRingEquipped()) return true;
+            if (Game1.player.CurrentTool is not StardewValley.Tools.Hoe) return true;
 
-                ModEntry.IsProcessing = true;
-                try
+            ModEntry.IsProcessing = true;
+            try
+            {
+                // Dropa 3 itens extras (Total 4, considerando o original do jogo)
+                for (int i = 0; i < 3; i++)
                 {
-                    for (int i = 0; i < 3; i++)
-                    {
-                        Game1.createObjectDebris(id, xTile + Game1.random.Next(-16, 17), yTile + Game1.random.Next(-16, 17), groundLevel, itemQuality, velocityMultiplyer, location);
-                    }
+                    Game1.createObjectDebris(id, xTile + Game1.random.Next(-16, 17), yTile + Game1.random.Next(-16, 17), groundLevel, itemQuality, velocityMultiplyer, location);
                 }
-                finally
-                {
-                    ModEntry.IsProcessing = false;
-                }
-                return true; 
             }
+            finally
+            {
+                ModEntry.IsProcessing = false;
+            }
+            return true; 
         }
     }
 }
