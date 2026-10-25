@@ -1,9 +1,9 @@
 {
-  "Name": "Anel do Arqueologo",
+  "Name": "Anel do Pescador",
   "Author": "SeuNome",
   "Version": "1.0.0",
-  "Description": "Adiciona o Anel do Arqueologo, que aumenta drasticamente os itens obtidos ao cavar com a pa.",
-  "UniqueID": "SeuNome.AnelDoArqueologo",
-  "EntryDll": "AnelDoArqueologo.dll",
+  "Description": "Adiciona o Anel do Pescador, que duplica qualquer peixe pescado.",
+  "UniqueID": "SeuNome.AnelDoPescador",
+  "EntryDll": "AnelDoPescador.dll",
   "MinimumApiVersion": "4.0.0"
 }
