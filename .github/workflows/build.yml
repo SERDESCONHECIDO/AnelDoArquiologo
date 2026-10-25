@@ -13,14 +13,14 @@ jobs:
     - name: Clonar Assemblies
       run: git clone --depth 1 https://github.com/StardewModders/mod-reference-assemblies.git "$HOME/StardewValley"
     - name: Compilar
-      run: dotnet build AnelDoArqueologo.csproj -c Release
+      run: dotnet build AnelDoPescador.csproj -c Release
     - name: Empacotar
       run: |
         mkdir -p Mod_Pronto
         cp manifest.json Mod_Pronto/
-        cp bin/Release/net6.0/AnelDoArqueologo.dll Mod_Pronto/
+        cp bin/Release/net6.0/AnelDoPescador.dll Mod_Pronto/
     - name: Salvar Zip
       uses: actions/upload-artifact@v4
       with:
-        name: AnelDoArqueologo-Mod
+        name: AnelDoPescador-Mod
         path: Mod_Pronto/
